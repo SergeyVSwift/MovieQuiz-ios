@@ -7,7 +7,7 @@ class QuestionFactory: QuestionFactoryProtocol {
         self.delegate = delegate
     }
     
-    private let questions: [QuizQuestion] = [
+    private let questions: [QuizQuestion] = [ // Сборник вопросов
         QuizQuestion(
             image: "The Godfather",
             text: "Рейтинг этого фильма больше чем 6?",
@@ -50,7 +50,8 @@ class QuestionFactory: QuestionFactoryProtocol {
             correctAnswer: false)]
     
     func requestNextQuestion() {
-        guard let index = (0..<questions.count).randomElement() else { delegate?.didReceiveNextQuestion(question: nil)
+        guard let index = (0..<questions.count).randomElement() else {
+            delegate?.didReceiveNextQuestion(question: nil)
             return
         }
         

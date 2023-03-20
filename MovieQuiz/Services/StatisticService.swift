@@ -7,7 +7,6 @@ protocol StatisticService {
     var bestGame: GameRecord { get }
 }
 
-
 // MARK: - StatisticServiceImplementation
 
 final class StatisticServiceImplementation: StatisticService {
@@ -78,3 +77,4 @@ final class StatisticServiceImplementation: StatisticService {
     }
     
 }
+

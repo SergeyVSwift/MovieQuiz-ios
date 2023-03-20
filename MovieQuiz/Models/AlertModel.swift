@@ -1,10 +1,9 @@
-import Foundation
+import UIKit
 
-// Структура для Алерта
+// Создаем Алерт
 struct AlertModel {
     let title: String
     let message: String
     let buttonText: String
-    let completion: () -> Void
+    let completion: () -> ()
 }
-    
