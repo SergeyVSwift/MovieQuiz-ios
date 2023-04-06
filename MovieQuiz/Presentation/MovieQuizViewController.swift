@@ -33,6 +33,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private let questionsAmount: Int = 10 // Максимальное количество вопросов
     
     
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var textOfQuestion: UILabel!
     @IBOutlet private weak var textLabel: UILabel!
     @IBOutlet private weak var imageView: UIImageView!
@@ -53,9 +54,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         alertPresenter = AlertPresenter(delegate: self)
-        questionFactory = QuestionFactory(delegate: self)
-        questionFactory?.requestNextQuestion()
+        
+        imageView.layer.cornerRadius = 20
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticServiceImplementation()
+        
+        showLoadingIndicator()
+        questionFactory?.loadData()
+        
     }
     
     //  MARK: - QuestionFactoryDelegate
@@ -67,6 +73,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
         }
+    }
+    
+    // MARK: - LoadQuestion
+    func didLoadDataFromServer() {
+        activityIndicator.isHidden = true // скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription) // возьмём в качестве сообщения описание ошибки
     }
     //MARK: - Private Func
     private func show(quiz step: QuizStepViewModel) {
@@ -95,11 +111,38 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    private func hideLoadingIndicator() {
+        activityIndicator.isHidden = true
+    }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        return QuizStepViewModel(image: UIImage(named: model.image) ?? UIImage(),
-                                 question: model.text,
-                                 questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
+        return QuizStepViewModel(
+            image: UIImage(data: model.image) ?? UIImage(),
+            question: model.text,
+            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
+    }
+    
+    // MARK: - NetworError
+    private func showNetworkError(message: String){
+        
+        let errorScreen = AlertModel(title: "Ошибка",
+                                     message: message,
+                                     buttonText: "Попробовать еще раз",
+                                     completion: { [weak self] in
+            guard let self = self else { return }
+            
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            self.questionFactory?.requestNextQuestion()
+        })
+        
+        alertPresenter?.showQuizResult(model: errorScreen)
     }
     
     // MARK: - showNextQuestionOrResults
@@ -111,7 +154,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             guard let gamesCount = statisticService?.gamesCount else { return }
             guard let bestGame = statisticService?.bestGame else { return }
             guard let totalAccuracy = statisticService?.totalAccuracy else { return }
-    
+            
             // Финальная версия окончания игры
             let finalScreen = AlertModel (title: "Этот раунд окончен!",
                                           message: """
@@ -133,7 +176,5 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             currentQuestionIndex += 1
             questionFactory?.requestNextQuestion()
         }
-        
     }
-    
 }

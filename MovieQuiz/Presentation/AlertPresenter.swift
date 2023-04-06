@@ -1,7 +1,7 @@
 import UIKit
 
 class AlertPresenter: AlertPresenterProtocol {
-
+   
     weak var delegate: UIViewController?
     
     init(delegate: UIViewController) {
@@ -17,10 +17,13 @@ class AlertPresenter: AlertPresenterProtocol {
             title: model.buttonText,
             style: .default) { _ in
                 model.completion()}
-            
+        
         alert.addAction(action)
         alert.preferredAction = action
-
+        
         delegate?.present(alert, animated: true, completion: nil)
     }
 }
+
+
+
