@@ -2,10 +2,10 @@ import UIKit
 
 class AlertPresenter: AlertPresenterProtocol {
    
-    weak var delegate: UIViewController?
+    weak var viewController: UIViewController?
     
-    init(delegate: UIViewController) {
-        self.delegate = delegate
+    init(viewController: UIViewController?) {
+        self.viewController = viewController
     }
     
     func showQuizResult(model: AlertModel) {
@@ -21,9 +21,6 @@ class AlertPresenter: AlertPresenterProtocol {
         alert.addAction(action)
         alert.preferredAction = action
         
-        delegate?.present(alert, animated: true, completion: nil)
+        viewController?.present(alert, animated: true, completion: nil)
     }
 }
-
-
-
