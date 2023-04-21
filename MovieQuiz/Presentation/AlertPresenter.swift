@@ -1,6 +1,6 @@
 import UIKit
 
-class AlertPresenter: AlertPresenterProtocol {
+final class AlertPresenter: AlertPresenterProtocol {
    
     weak var viewController: UIViewController?
     
@@ -20,6 +20,7 @@ class AlertPresenter: AlertPresenterProtocol {
         
         alert.addAction(action)
         alert.preferredAction = action
+        alert.view.accessibilityIdentifier = "Game results"
         
         viewController?.present(alert, animated: true, completion: nil)
     }

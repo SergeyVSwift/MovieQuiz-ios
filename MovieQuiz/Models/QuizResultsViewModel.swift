@@ -1,6 +1,6 @@
 import Foundation
 
-// Структура для состояния "Результат"
+// Структура для состояния "Результата"
 struct QuizResultsViewModel { 
     let title: String
     let text: String

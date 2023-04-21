@@ -12,7 +12,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet private weak var indexQuestionText: UILabel!
     @IBOutlet private weak var noButton: UIButton!
     @IBOutlet private weak var yesButton: UIButton!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
 
 
     // MARK: - Properties
@@ -68,7 +68,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     }
 
     func showLoadingIndicator() {
-        activityIndicator.isHidden = false
+        activityIndicator.hidesWhenStopped = false
         activityIndicator.startAnimating()
     }
     func hideLoadingIndicator() {
